@@ -10,19 +10,35 @@ import {
 import { StatusBar } from 'expo-status-bar';
 import { VideoRoomScreen } from './src/screens/VideoRoomScreen';
 
+function sanitizeServerUrl(value: string) {
+  return value.trim().replace(/\/+$/, '');
+}
+
+function sanitizeToken(value: string) {
+  // Multiline paste can introduce spaces/newlines that break JWT auth.
+  return value.replace(/\s+/g, '');
+}
+
 export default function App() {
   const [serverUrl, setServerUrl] = useState(
-    process.env.EXPO_PUBLIC_LIVEKIT_URL ?? 'wss://your-project.livekit.cloud',
+    process.env.EXPO_PUBLIC_LIVEKIT_URL ??
+      process.env.LIVEKIT_URL ??
+      'wss://a3-app-8loi2kwo.livekit.cloud',
   );
   const [token, setToken] = useState('');
   const [joined, setJoined] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  if (joined && token.trim()) {
+  const cleanedUrl = sanitizeServerUrl(serverUrl);
+  const cleanedToken = sanitizeToken(token);
+
+  if (joined && cleanedToken) {
     return (
       <VideoRoomScreen
-        serverUrl={serverUrl.trim()}
-        token={token.trim()}
+        serverUrl={cleanedUrl}
+        token={cleanedToken}
         onLeave={() => setJoined(false)}
+        onError={(message) => setError(message)}
       />
     );
   }
@@ -34,8 +50,8 @@ export default function App() {
         <Text style={styles.brand}>StreamCare</Text>
         <Text style={styles.title}>LiveKit video test</Text>
         <Text style={styles.subtitle}>
-          Paste a LiveKit WebSocket URL and room token, then join. Generate a
-          token with npm run livekit:token.
+          Paste the WebSocket URL and token separately (do not combine them).
+          Generate a token with npm run livekit:token.
         </Text>
 
         <Text style={styles.label}>Server URL</Text>
@@ -44,7 +60,10 @@ export default function App() {
           autoCapitalize="none"
           autoCorrect={false}
           value={serverUrl}
-          onChangeText={setServerUrl}
+          onChangeText={(value) => {
+            setError(null);
+            setServerUrl(value);
+          }}
           placeholder="wss://…livekit.cloud"
         />
 
@@ -55,14 +74,22 @@ export default function App() {
           autoCorrect={false}
           multiline
           value={token}
-          onChangeText={setToken}
+          onChangeText={(value) => {
+            setError(null);
+            setToken(value);
+          }}
           placeholder="Paste token from npm run livekit:token"
         />
 
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+
         <Pressable
-          style={[styles.button, !token.trim() && styles.buttonDisabled]}
-          disabled={!token.trim()}
-          onPress={() => setJoined(true)}
+          style={[styles.button, !cleanedToken && styles.buttonDisabled]}
+          disabled={!cleanedToken}
+          onPress={() => {
+            setError(null);
+            setJoined(true);
+          }}
         >
           <Text style={styles.buttonText}>Join room</Text>
         </Pressable>
@@ -117,6 +144,11 @@ const styles = StyleSheet.create({
   tokenInput: {
     minHeight: 110,
     textAlignVertical: 'top',
+  },
+  error: {
+    color: '#b91c1c',
+    marginBottom: 12,
+    lineHeight: 20,
   },
   button: {
     backgroundColor: '#0f766e',

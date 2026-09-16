@@ -13,23 +13,23 @@ export const colors = {
   surfaceMuted: '#EDF2F7',
   input: '#EDF2F7',
 
-  // Text
-  text: '#1A202C',
-  textSecondary: '#4A5568',
-  textMuted: '#718096',
+  // Text — stronger contrast for older adults
+  text: '#111827',
+  textSecondary: '#374151',
+  textMuted: '#4B5563',
   textOnDark: '#FFFFFF',
-  textMutedOnDark: '#94A3B8',
+  textMutedOnDark: '#D1D5DB',
 
   // Semantic aliases used across screens
   primary: '#2EC4B6',
   primaryDark: '#1FA89B',
   primarySoft: '#D7F5F1',
   accent: '#2EC4B6',
-  border: '#E2E8F0',
-  danger: '#E53E3E',
-  dangerSoft: '#FED7D7',
+  border: '#CBD5E1',
+  danger: '#DC2626',
+  dangerSoft: '#FEE2E2',
   success: '#2EC4B6',
-  warning: '#DD6B20',
+  warning: '#C2410C',
 };
 
 export const spacing = {
@@ -43,7 +43,24 @@ export const spacing = {
 
 export const radii = {
   sm: 8,
-  md: 10,
-  lg: 14,
+  md: 12,
+  lg: 16,
   pill: 999,
+};
+
+/** Patient-friendly type scale (larger defaults for older adults) */
+export const type = {
+  xs: 14,
+  sm: 16,
+  md: 18,
+  lg: 22,
+  xl: 28,
+  xxl: 32,
+};
+
+/** Minimum comfortable tap target */
+export const touch = {
+  min: 52,
+  comfortable: 56,
+  large: 60,
 };

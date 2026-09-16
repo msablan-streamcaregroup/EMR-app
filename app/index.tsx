@@ -11,7 +11,7 @@ import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { colors, radii, spacing } from '@/constants/theme';
+import { colors, radii, spacing, touch, type } from '@/constants/theme';
 
 type AuthMode = 'login' | 'signup';
 
@@ -44,25 +44,21 @@ export default function LoginScreen() {
 
         <View style={styles.brandRow}>
           <View style={styles.logoMark}>
-            <Ionicons name="pulse" size={22} color="#FFFFFF" />
+            <Ionicons name="pulse" size={26} color="#FFFFFF" />
           </View>
-          <View>
+          <View style={styles.brandText}>
             <Text style={styles.brandTitle}>A3 Platform</Text>
-            <Text style={styles.brandSubtitle}>Patient Mobile App</Text>
+            <Text style={styles.brandSubtitle}>Patient app</Text>
           </View>
         </View>
 
-        <Text style={styles.hero}>
-          Your care tasks, devices, and visits in one place.
+        <Text style={styles.heading}>
+          {isLogin ? 'Welcome back' : 'Create your account'}
         </Text>
-
-        <Text style={styles.cardTitle}>
-          {isLogin ? 'Welcome Back' : 'Create Account'}
-        </Text>
-        <Text style={styles.cardSubtitle}>
+        <Text style={styles.subheading}>
           {isLogin
-            ? 'Sign in to your care dashboard'
-            : 'Register with your invite code'}
+            ? 'Sign in to see your care tasks and visits.'
+            : 'Enter the invite code from your care team.'}
         </Text>
 
         {!isLogin && (
@@ -80,7 +76,7 @@ export default function LoginScreen() {
         )}
 
         <View style={styles.field}>
-          <Text style={styles.label}>Email Address</Text>
+          <Text style={styles.label}>Email</Text>
           <TextInput
             value={email}
             onChangeText={setEmail}
@@ -99,7 +95,7 @@ export default function LoginScreen() {
             <TextInput
               value={password}
               onChangeText={setPassword}
-              placeholder="••••••••"
+              placeholder="Enter password"
               placeholderTextColor={colors.textMuted}
               secureTextEntry={!showPassword}
               style={styles.passwordInput}
@@ -114,15 +110,15 @@ export default function LoginScreen() {
             >
               <Ionicons
                 name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                size={22}
-                color={colors.textMuted}
+                size={26}
+                color={colors.textSecondary}
               />
             </Pressable>
           </View>
         </View>
 
         {isLogin && (
-          <View style={styles.optionsRow}>
+          <>
             <Pressable
               accessibilityRole="checkbox"
               accessibilityState={{ checked: keepSignedIn }}
@@ -136,16 +132,16 @@ export default function LoginScreen() {
                 ]}
               >
                 {keepSignedIn && (
-                  <Ionicons name="checkmark" size={14} color="#FFFFFF" />
+                  <Ionicons name="checkmark" size={18} color="#FFFFFF" />
                 )}
               </View>
               <Text style={styles.checkboxLabel}>Keep me signed in</Text>
             </Pressable>
 
-            <Pressable accessibilityRole="button">
+            <Pressable accessibilityRole="button" style={styles.forgotButton}>
               <Text style={styles.link}>Forgot password?</Text>
             </Pressable>
-          </View>
+          </>
         )}
 
         <Pressable
@@ -167,16 +163,15 @@ export default function LoginScreen() {
           style={styles.switchMode}
         >
           <Text style={styles.switchModeText}>
-            {isLogin ? 'New user? ' : 'Already have an account? '}
-            <Text style={styles.link}>
-              {isLogin ? 'Register with invite code' : 'Sign in'}
-            </Text>
+            {isLogin ? 'New here?' : 'Already have an account?'}
+          </Text>
+          <Text style={styles.link}>
+            {isLogin ? 'Register with invite code' : 'Sign in instead'}
           </Text>
         </Pressable>
 
         <Text style={styles.footerNote}>
-          Protected by HIPAA-compliant security · Not for emergencies — call
-          911 if you need urgent help
+          This app is not for emergencies. If you need urgent help, call 911.
         </Text>
       </ScrollView>
     </SafeAreaView>
@@ -199,157 +194,158 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   orgLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    letterSpacing: 1.4,
+    fontSize: type.xs,
+    fontWeight: '700',
+    letterSpacing: 1.2,
     color: colors.textMuted,
     marginBottom: spacing.md,
   },
   brandRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.lg,
+    marginBottom: spacing.xl,
   },
   logoMark: {
-    width: 44,
-    height: 44,
+    width: 52,
+    height: 52,
     borderRadius: radii.md,
     backgroundColor: colors.teal,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: spacing.md,
   },
+  brandText: {
+    flex: 1,
+  },
   brandTitle: {
-    fontSize: 22,
+    fontSize: type.lg,
     fontWeight: '700',
     color: colors.text,
   },
   brandSubtitle: {
     marginTop: 2,
-    fontSize: 14,
+    fontSize: type.sm,
     color: colors.textSecondary,
   },
-  hero: {
-    fontSize: 22,
-    lineHeight: 30,
-    fontWeight: '600',
-    color: colors.text,
-    marginBottom: spacing.lg,
-    maxWidth: 340,
-  },
-  cardTitle: {
-    fontSize: 26,
+  heading: {
+    fontSize: type.xl,
     fontWeight: '700',
     color: colors.text,
   },
-  cardSubtitle: {
-    marginTop: spacing.xs,
-    marginBottom: spacing.lg,
-    fontSize: 15,
+  subheading: {
+    marginTop: spacing.sm,
+    marginBottom: spacing.xl,
+    fontSize: type.md,
+    lineHeight: 26,
     color: colors.textSecondary,
   },
   field: {
-    marginBottom: spacing.md,
+    marginBottom: spacing.lg,
   },
   label: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: type.md,
+    fontWeight: '700',
     color: colors.text,
     marginBottom: spacing.sm,
   },
   input: {
-    minHeight: 52,
+    minHeight: touch.large,
     borderRadius: radii.md,
     paddingHorizontal: spacing.md,
-    fontSize: 16,
+    fontSize: type.md,
     color: colors.text,
     backgroundColor: colors.input,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   passwordWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    minHeight: 52,
+    minHeight: touch.large,
     borderRadius: radii.md,
     backgroundColor: colors.input,
+    borderWidth: 1,
+    borderColor: colors.border,
     paddingRight: spacing.sm,
   },
   passwordInput: {
     flex: 1,
-    minHeight: 52,
+    minHeight: touch.large,
     paddingHorizontal: spacing.md,
-    fontSize: 16,
+    fontSize: type.md,
     color: colors.text,
   },
   eyeButton: {
-    minWidth: 44,
-    minHeight: 44,
+    minWidth: touch.min,
+    minHeight: touch.min,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  optionsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: spacing.md,
   },
   checkboxRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    minHeight: 44,
+    minHeight: touch.min,
+    marginBottom: spacing.sm,
   },
   checkbox: {
-    width: 20,
-    height: 20,
-    borderRadius: 4,
-    borderWidth: 1.5,
+    width: 28,
+    height: 28,
+    borderRadius: 6,
+    borderWidth: 2,
     borderColor: colors.teal,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: spacing.sm,
+    marginRight: spacing.md,
   },
   checkboxChecked: {
     backgroundColor: colors.teal,
   },
   checkboxLabel: {
-    fontSize: 14,
-    color: colors.textSecondary,
+    fontSize: type.md,
+    color: colors.text,
+    flex: 1,
+  },
+  forgotButton: {
+    minHeight: touch.min,
+    justifyContent: 'center',
+    marginBottom: spacing.md,
   },
   link: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.teal,
+    fontSize: type.md,
+    fontWeight: '700',
+    color: colors.tealDark,
   },
   primaryButton: {
-    minHeight: 54,
+    minHeight: touch.large,
     borderRadius: radii.md,
     backgroundColor: colors.teal,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: spacing.sm,
   },
   primaryButtonPressed: {
     backgroundColor: colors.tealDark,
   },
   primaryButtonText: {
     color: '#FFFFFF',
-    fontSize: 17,
+    fontSize: type.lg,
     fontWeight: '700',
   },
   switchMode: {
     marginTop: spacing.lg,
     alignItems: 'center',
-    minHeight: 44,
+    minHeight: touch.comfortable,
     justifyContent: 'center',
+    gap: 4,
   },
   switchModeText: {
-    fontSize: 14,
+    fontSize: type.sm,
     color: colors.textSecondary,
     textAlign: 'center',
   },
   footerNote: {
-    marginTop: spacing.lg,
-    fontSize: 12,
-    lineHeight: 18,
+    marginTop: spacing.xl,
+    fontSize: type.sm,
+    lineHeight: 24,
     color: colors.textMuted,
     textAlign: 'center',
   },
